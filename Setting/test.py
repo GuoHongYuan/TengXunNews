@@ -20,6 +20,25 @@ import time
 import json
 import random
 
+
+def getJSon(id):
+    pattern = re.compile('[(](.*)[)]')
+    response = urllib.request.urlopen('http://coral.qq.com/article/' + id + '/comment/v2?callback=_article' + id + 'commentv2&orinum=30')
+    m = pattern.search(str(response.read().decode('utf-8')))
+    p1 = re.compile(r'\(')
+    p2 = re.compile(r'\)')
+    s1 = p1.sub('[',m.group())
+    s2 = p2.sub(']',s1)
+    value = json.loads(s2)
+    return str(value[0])
+
+def ClearJsonStr(jsonStr):
+    p = re.compile(r'[\[,\]]')
+    s = p.sub('\'', jsonStr)
+    print(s)
+ClearJsonStr(getJSon('3727792602'))
+
+
 '''
 from selenium import webdriver
 chromeOptions = webdriver.ChromeOptions() # 设置代理
@@ -31,7 +50,7 @@ browser.quit()
 '''
 
 
-'''
+
 import pymysql
 db = pymysql.connect('localhost','root','3.141592653579','chineseword',charset='utf8' )
 cursor = db.cursor()
@@ -43,7 +62,7 @@ db.commit()
 response = requests.get('https://list.jd.com/list.html?cat=12218,12221&page=1')
 print(response.text)
 
-'''
+
 
 '''
 pattern = "[\u4e00-\u9fa5]+"
@@ -63,7 +82,7 @@ req = Request(url='http://www.baidu.com?id=1&name=8',callback=lambda x:print(x),
 result = request.request_fingerprint(req,include_headers=['cookies',])
 print(result)
 '''
-
+'''
 headers = {
 'accept': '*/*',
 'accept-encoding': 'gzip, deflate, br',
@@ -103,7 +122,7 @@ for item in data2:
         print()
     list.append(dict)
 print(list)
-
+'''
 
 '''
 url = 'https://ad.3.cn/ads/mgets?&callback=jQuery4190391&my=list_adWords&source=JDList&skuids=AD_4925701%2C'

@@ -11,7 +11,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import json
 import random
-
+import time
 import random
 from scrapy import signals
 from TengXunCrawl.settings import IPPOOL
@@ -19,7 +19,6 @@ from TengXunCrawl.settings import IPPOOL
 import sys
 sys.path.append('E:\DataAnalysis\\tools\python3\project\DistributedCrawler\Setting')
 from UserAgent import *
-
 
 class Url_SM(object):
 
@@ -32,19 +31,18 @@ class Url_SM(object):
         chrome_options.add_argument('--headless')  # 使用无头谷歌浏览器模式
         chrome_options.add_argument('--disable-gpu')
         chrome_options.add_argument('--no-sandbox')
+        prefs = {"profile.managed_default_content_setting.images": 2}
+        chrome_options.add_experimental_option("prefs", prefs)
         #print('user-agent="'+random.choice(MY_USER_AGENT)+'"')
-        #chrome_options.add_argument('--user-agent="'+random.choice(MY_USER_AGENT)+'"')
+        chrome_options.add_argument('--user-agent="'+random.choice(MY_USER_AGENT)+'"')
         #chrome_options.add_argument("--proxy-server="+random.choice(self.jsonDict)['ipaddr'])
 
         # 指定谷歌浏览器路径
         self.driver = webdriver.Chrome(chrome_options=chrome_options,executable_path='E:\DataAnalysis\\tools\python3\chromedriver')
         self.driver.get(request.url)
-        #time.sleep(1)
         html = self.driver.page_source
         self.driver.quit() #释放内存
         return scrapy.http.HtmlResponse(url=request.url, body=html.encode('utf-8'), encoding='utf-8', request=request)
-
-
 
 class TengxuncrawlSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
@@ -92,7 +90,6 @@ class TengxuncrawlSpiderMiddleware(object):
 
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)
-
 
 class TengxuncrawlDownloaderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
